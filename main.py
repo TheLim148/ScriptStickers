@@ -12,7 +12,7 @@ def make_avatar(avatar_path, file):
     if(avatar.width == avatar.height):
         avatar = avatar.convert("RGBA")
         avatar = avatar.resize((100, 100))
-        avatar = avatar.save(f"{avatar_path}/{only_name(file)}.png")
+        avatar = avatar.save(f"{avatar_path}/{only_name(file)}.png", optimize = True)
     else:
         try:
             avatar1 = avatar.copy()
@@ -32,7 +32,7 @@ def make_avatar(avatar_path, file):
 
             avatar = Image.open(f"{avatar_path}/{only_name(file)}.png")
             avatar = avatar.resize((100, 100))
-            avatar = avatar.save(f"{avatar_path}/{only_name(file)}.png")
+            avatar = avatar.save(f"{avatar_path}/{only_name(file)}.png", optimize = True)
         except FileExistsError:
             pass
 
@@ -62,10 +62,10 @@ def change(dir_from, dir_to):
             image = image.resize((round(image.width*coef), round(image.height*coef)))
             canvas.paste(image, (0, 256-round(image.height/2)))
         
-        canvas = canvas.save(f"{dir_to}/{only_name(file)}.png")
+        canvas = canvas.save(f"{dir_to}/{only_name(file)}.png", optimize = True)
 
 while True:
-    choose = int(input("\n1 - сделать стикеры\n2 - сделать аватар\n3 - выход\n~$ "))
+    choose = int(input("\n1 - сделать стикеры\n2 - сделать аватар\n3 - переименовать файлы\n4 - выход\n~$ "))
 
     match(choose):
         case 1:
@@ -79,6 +79,10 @@ while True:
             make_avatar(avatar_path, file)
             print("Аватарка готова!")
         case 3:
+            input_dir = input("Введите директорию, где хотите переименовать файлы: ")
+            rename(input_dir)
+            print("Переименование прошло успешно")
+        case 4:
             print("Поки!")
             break
 
