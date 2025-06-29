@@ -36,7 +36,6 @@ def make_avatar(avatar_path, file):
         except FileExistsError:
             pass
 
-
 def rename(input_dir):
     files = sorted(os.listdir(input_dir))
     for i, file in enumerate(files):
@@ -45,6 +44,20 @@ def rename(input_dir):
     temp_files = sorted(os.listdir(input_dir))
     for i, file in enumerate(temp_files):
         os.rename(f"{input_dir}/{file}", f"{input_dir}/{i}.jpg")
+
+def change_one_file(dir_from, file, dir_to):
+    image = Image.open(f"{dir_from}/{file}")
+    canvas = Image.new("RGBA", (512, 512), (0, 0, 0, 0))
+    if (image.width <= image.height):
+        coef = 512/image.height
+        image = image.resize((round(image.width*coef), round(image.height*coef)))
+        canvas.paste(image, (256-round(image.width/2), 0))
+    elif (image.height <= image.width):
+        coef = 512/image.width
+        image = image.resize((round(image.width*coef), round(image.height*coef)))
+        canvas.paste(image, (0, 256-round(image.height/2)))
+    
+    canvas = canvas.save(f"{dir_to}/{only_name(file)}.png", optimize = True)
 
 def change(dir_from, dir_to):
     rename(dir_from)
@@ -63,6 +76,11 @@ def change(dir_from, dir_to):
             canvas.paste(image, (0, 256-round(image.height/2)))
         
         canvas = canvas.save(f"{dir_to}/{only_name(file)}.png", optimize = True)
+
+        if(os.path.getsize(f"{dir_to}/{only_name(file)}.png") >= 524_288):
+            temp_image = Image.open(f"{dir_from}/{file}")
+            temp_image.save(f"{dir_from}/{file}", optimize = True, quality = 20)
+            change_one_file(dir_from, file, dir_to)
 
 while True:
     choose = int(input("\n1 - сделать стикеры\n2 - сделать аватар\n3 - переименовать файлы\n4 - выход\n~$ "))
