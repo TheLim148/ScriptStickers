@@ -1,0 +1,25 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# VS Code settings (если используешь)
+.vscode/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# OS-папки
+.DS_Store
+Thumbs.db
+
+# Virtual environment
+venv/
+env/
+
+# Log / temp files
+*.log
+*.tmp
+*.bak
+
+# Git ignore file for Python
