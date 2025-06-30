@@ -1,6 +1,17 @@
 from PIL import Image
 import shutil
+import subprocess
 import os
+
+def tempFiles(dir_to):
+    bat_path = os.path.join(dir_to, "delete_all.bat")
+
+    with open(bat_path, "w") as f:
+        f.write("timeout /t 1800 >nul\n")
+        f.write(f"del /f /q \"{dir_to}\\*.png\"\n")
+        f.write(f"del /f /q \"{bat_path}\"\n")
+
+    subprocess.Popen([bat_path], creationflags=subprocess.CREATE_NO_WINDOW)
 
 def only_name(file_path):
     extension = "." + file_path.split('.')[-1]
@@ -82,20 +93,47 @@ def change(dir_from, dir_to):
             temp_image.save(f"{dir_from}/{file}", optimize = True, quality = 20)
             change_one_file(dir_from, file, dir_to)
 
+deleteFiles = False
+try:
+    deleteFiles = int(input("Do you want to delete your files after 30 minutes?" \
+                            "\n1 == True | 0 == False" \
+                            "\nP.S False by default" \
+                            "\n~$ "))
+    if (deleteFiles == 1):
+        deleteFiles = True
+    elif (deleteFiles == 0):
+        deleteFiles = False
+except ValueError:
+    print("It's not a number!")
+
 while True:
-    choose = int(input("\n1 - сделать стикеры\n2 - сделать аватар\n3 - переименовать файлы\n4 - выход\n~$ "))
+    choose = int(input("\n1 - сделать стикеры" \
+                        "\n2 - сделать аватар" \
+                        "\n3 - переименовать файлы" \
+                        "\n4 - выход" \
+                        "\n~$ "))
 
     match(choose):
         case 1:
             dir_from = input("\nВведите название исходной папки: ")
             dir_to = input("Введите название итоговой папки: ")
-            change(dir_from, dir_to)
-            print("Стикеры успешно созданы!")
+            try:
+                change(dir_from, dir_to)
+                if (deleteFiles == True):
+                    tempFiles(dir_to)
+                print("Стикеры успешно созданы!\nОни будут автоматически удалены через 30 минут")
+            except FileNotFoundError:
+                print("There is no folder or file")
         case 2:
             avatar_path = input("\nВведите путь до директории с файлом-аватаром: ")
             file = input("Введите имя файла-аватара: ")
-            make_avatar(avatar_path, file)
-            print("Аватарка готова!")
+            try:
+                make_avatar(avatar_path, file)
+                if (deleteFiles == True):
+                    tempFiles(dir_to)
+                print("Аватарка готова!\nОна будут автоматически удалены через 30 минут")
+            except FileNotFoundError:
+                print("There is no file or folder")
         case 3:
             input_dir = input("Введите директорию, где хотите переименовать файлы: ")
             rename(input_dir)
