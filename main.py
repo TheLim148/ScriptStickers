@@ -16,7 +16,7 @@ if __name__ == "__main__":
         deleteFiles = 0
         deleteFiles = int(input("\nDo you want to delete your files after 30 minutes?" \
                                 "\n1 - Yes; 0 - No" \
-                                "\nP.S False by default" \
+                                "\nP.S No by default" \
                                 "\n~$ "))
     except Exception as e:
         print(f"Error: {e}")
@@ -39,11 +39,16 @@ if __name__ == "__main__":
                             dir_from = input("\nВведите название исходной папки: ")
                             dir_to = input("Введите название итоговой папки: ")
 
-                            if(not os.listdir(dir_to)):
-                                IS.rename(dir_from, dir_to, option)
-                                IS.changePhotos(dir_from, dir_to)
-                            else:
-                                clearDirectory(dir_to)
+                            if(os.listdir(dir_to)):
+                                wantToDeleteStickers = int(input("\nВаша выходная директория не пустая, если вы продолжите, то её содержимое будет удалено" \
+                                                                 "\nВы хотите продолжить?" \
+                                                                 "\n1 - Yes; 2 - No" \
+                                                                 "\n~$ "))
+                                match(wantToDeleteStickers):
+                                    case 1:
+                                        clearDirectory(dir_to)
+                                    case 2:
+                                        break
                                 IS.rename(dir_from, dir_to, option)
                                 IS.changePhotos(dir_from, dir_to)
 
